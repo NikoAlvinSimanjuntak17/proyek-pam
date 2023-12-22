@@ -1,23 +1,23 @@
-import 'package:it_del/Models/baju.dart';
-import 'package:it_del/Services/globals.dart';
 import 'package:flutter/material.dart';
-import 'package:it_del/Mahasiswa.views/FormBookingBaju.dart';
-import 'package:it_del/Models/api_response.dart';
-import 'package:it_del/Models/bookingbaju.dart';
-import 'package:it_del/Services/bookingbaju_service.dart';
+import 'package:PAM/Mahasiswa.views/FormBookingRuangan.dart';
+import 'package:PAM/Models/api_response.dart';
+import 'package:PAM/Models/booking_ruangan.dart';
+import 'package:PAM/Services/bookingruangan_service.dart';
+import 'package:PAM/Models/ruangan.dart';
+import 'package:PAM/Services/globals.dart';
 
-class BookingBajuScreen extends StatefulWidget {
+class BookingScreen extends StatefulWidget {
   @override
-  _BookingBajuScreenState createState() => _BookingBajuScreenState();
+  _BookingScreenState createState() => _BookingScreenState();
 }
 
-class _BookingBajuScreenState extends State<BookingBajuScreen> {
-  List<BookingBaju> bookingList = [];
-  List<Baju> bajuList = [];
+class _BookingScreenState extends State<BookingScreen> {
+  List<BookingRuangan> bookingList = [];
+  List<Ruangan> roomList = [];
 
-  void deleteIzinBermalam(int id) async {
+  void deleteBooking(int id) async {
     try {
-      ApiResponse response = await DeleteBookingBaju(id);
+      ApiResponse response = await DeleteBookingRuangan(id);
 
       if (response.error == null) {
         await Future.delayed(Duration(milliseconds: 300));
@@ -31,7 +31,7 @@ class _BookingBajuScreenState extends State<BookingBajuScreen> {
         ));
       }
     } catch (e) {
-      print("Error in deleteIzinBermalam: $e");
+      print("Error in deleteBooking: $e");
     }
   }
 
@@ -42,10 +42,10 @@ class _BookingBajuScreenState extends State<BookingBajuScreen> {
   }
 
   Future<void> fetchBookingRequests() async {
-    ApiResponse apiResponse = await getRequestBaju();
+    ApiResponse apiResponse = await getRequestRuangan();
     if (apiResponse.data != null) {
       setState(() {
-        bookingList = List<BookingBaju>.from(apiResponse.data);
+        bookingList = List<BookingRuangan>.from(apiResponse.data);
       });
       await fetchRoomList();
     } else {
@@ -54,22 +54,22 @@ class _BookingBajuScreenState extends State<BookingBajuScreen> {
   }
 
   Future<void> fetchRoomList() async {
-    ApiResponse roomResponse = await getBaju();
+    ApiResponse roomResponse = await getRuangan();
     if (roomResponse.data != null) {
       setState(() {
-        bajuList = List<Baju>.from(roomResponse.data);
+        roomList = List<Ruangan>.from(roomResponse.data);
       });
     } else {
       print(roomResponse.error);
     }
   }
 
-  String getBajuUkuran(int? bajuId) {
-    Baju? baju = bajuList.firstWhere(
-      (baju) => baju.id == bajuId,
-      orElse: () => Baju(),
+  String getRoomName(int? roomId) {
+    Ruangan? room = roomList.firstWhere(
+      (room) => room.id == roomId,
+      orElse: () => Ruangan(),
     );
-    return baju.ukuran ?? 'N/A';
+    return room?.NamaRuangan ?? 'N/A';
   }
 
   @override
@@ -79,24 +79,19 @@ class _BookingBajuScreenState extends State<BookingBajuScreen> {
         title: Text('Booking Requests'),
       ),
       body: DataTable(
-        headingTextStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-        ),
-        dataRowHeight: 56,
         columns: [
           DataColumn(label: Text('No')),
-          DataColumn(label: Text('Ukuran')),
+          DataColumn(label: Text('Room')),
           DataColumn(label: Text('Status')),
-          DataColumn(label: Text('Actions')), // Added a column for actions
+          DataColumn(label: Text('Actions')),
         ],
         rows: bookingList.map((booking) {
           int index = bookingList.indexOf(booking);
           return DataRow(
             cells: [
               DataCell(Text('${index + 1}')),
-              DataCell(Text('${getBajuUkuran(booking.bajuId)}')),
-              DataCell(Text(booking.status)),
+              DataCell(Text('Room: ${getRoomName(booking.roomId)}')),
+              DataCell(Text(booking.status ?? 'N/A')),
               DataCell(
                 PopupMenuButton(
                   itemBuilder: (BuildContext context) {
@@ -112,8 +107,7 @@ class _BookingBajuScreenState extends State<BookingBajuScreen> {
                     ];
                   },
                   onSelected: (String value) {
-                    if (value == 'edit') {
-                    } else if (value == 'view') {
+                    if (value == 'view') {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -122,10 +116,12 @@ class _BookingBajuScreenState extends State<BookingBajuScreen> {
                             content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Ukuran: ${booking.bajuId}"),
+                                Text("Keperluan: ${booking.reason}"),
                                 SizedBox(height: 8),
                                 Text(
-                                    "Waktu PEngambilan: ${booking.tanggalPengambilan}"),
+                                    "Waktu Mulai: ${booking.startTime ?? 'N/A'}"),
+                                Text(
+                                    "Waktu Berakhir: ${booking.endTime ?? 'N/A'}"),
                               ],
                             ),
                             actions: [
@@ -137,20 +133,20 @@ class _BookingBajuScreenState extends State<BookingBajuScreen> {
                               ),
                             ],
                             contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical:
-                                    8), // Sesuaikan nilai sesuai kebutuhan
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
                           );
                         },
                       );
                     } else if (value == 'delete') {
                       int index = bookingList.indexOf(booking);
-                      BookingBaju selectedIzinKeluar = bookingList[index];
+                      BookingRuangan selectedBooking = bookingList[index];
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text("Delete Izin Keluar"),
+                            title: Text("Delete Booking"),
                             content: Text(
                                 "Are you sure you want to delete this request?"),
                             actions: [
@@ -162,7 +158,7 @@ class _BookingBajuScreenState extends State<BookingBajuScreen> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  deleteIzinBermalam(selectedIzinKeluar.id);
+                                  deleteBooking(selectedBooking.id ?? 0);
                                 },
                                 child: Text('Delete'),
                               ),
@@ -183,7 +179,7 @@ class _BookingBajuScreenState extends State<BookingBajuScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => FormBookingBaju(),
+              builder: (context) => BookingFormScreen(),
             ),
           ).then((value) {
             if (value == true) {

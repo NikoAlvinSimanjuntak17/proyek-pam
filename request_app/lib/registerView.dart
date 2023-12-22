@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:it_del/Auth/login_screen.dart';
-import 'package:it_del/Models/api_response.dart';
-import 'package:it_del/Models/user.dart';
-import 'package:it_del/Services/User_service.dart';
+import 'package:PAM/Auth/login_screen.dart';
+import 'package:PAM/Models/api_response.dart';
+import 'package:PAM/Models/user.dart';
+import 'package:PAM/Services/User_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../rounded_button.dart';
 import '../Mahasiswa.views/MahasiswaScreen.dart';
@@ -32,7 +32,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       txtpassword.text,
     );
     if (response.error == null) {
-      // Extract the role from the response
       _saveAndRedirectHome(response.data as User);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -54,19 +53,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
-        centerTitle: true,
-        elevation: 0,
-        title: Text(
-          'Register',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(26.0),
         child: SingleChildScrollView(
@@ -144,16 +130,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               RoundedButton(
                 btnText: 'Register',
                 onBtnPressed: () => createAccountPressed(),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                  (route) => false,
-                ),
-                child: Text(
-                  'Already have an account? Login',
-                  style: TextStyle(color: Colors.blue),
-                ),
               ),
             ],
           ),

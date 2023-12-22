@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:it_del/Models/api_response.dart';
-import 'package:it_del/Models/suratBaak.dart';
-import 'package:it_del/Services/SuratBaak_service.dart';
+import 'package:PAM/Models/api_response.dart';
+import 'package:PAM/Models/suratBaak.dart';
+import 'package:PAM/Services/SuratBaak_service.dart';
 
 class IzinSuratBaakView extends StatefulWidget {
   @override

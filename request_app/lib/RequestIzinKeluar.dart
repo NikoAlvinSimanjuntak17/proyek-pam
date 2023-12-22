@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:it_del/Mahasiswa.views/FormIzinKeluar.dart';
-import 'package:it_del/Mahasiswa.views/MahasiswaScreen.dart';
-import 'package:it_del/Models/api_response.dart';
-import 'package:it_del/Models/request_izin_keluar.dart';
-import 'package:it_del/Auth/login_screen.dart';
-import 'package:it_del/Services/IzinKeluar_service.dart';
-import 'package:it_del/Services/globals.dart';
-import 'package:it_del/Services/User_service.dart';
+import 'package:PAM/Mahasiswa.views/FormIzinKeluar.dart';
+import 'package:PAM/Mahasiswa.views/MahasiswaScreen.dart';
+import 'package:PAM/Models/api_response.dart';
+import 'package:PAM/Models/request_izin_keluar.dart';
+import 'package:PAM/Auth/login_screen.dart';
+import 'package:PAM/Services/IzinKeluar_service.dart';
+import 'package:PAM/Services/globals.dart';
+import 'package:PAM/Services/User_service.dart';
 
 class RequestIzinKeluarScreen extends StatefulWidget {
   @override
@@ -82,36 +82,17 @@ class _RequestIzinKeluarScreenState extends State<RequestIzinKeluarScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primaryColor: Colors.blue,
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          secondary: Colors.blueAccent,
-        ),
-      ),
       home: Scaffold(
         appBar: AppBar(
           title: Text('Izin Keluar Requests'),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: _navigateToAddData,
-            ),
-          ],
         ),
         body: _loading
             ? Center(
-                child: CircularProgressIndicator(
-                  color: Colors.blue,
-                ),
+                child: CircularProgressIndicator(),
               )
             : SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
-                  headingTextStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  dataRowHeight: 56,
                   columns: [
                     DataColumn(label: Text('No')),
                     DataColumn(label: Text('Keperluan IK')),
@@ -214,36 +195,9 @@ class _RequestIzinKeluarScreenState extends State<RequestIzinKeluarScreen> {
                   }).toList(),
                 ),
               ),
-        floatingActionButton: FloatingActionButton.extended(
+        floatingActionButton: FloatingActionButton(
           onPressed: _navigateToAddData,
-          label: Text('Request Here'),
-          icon: Icon(Icons.add),
-          backgroundColor: Colors.blue,
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.blue,
-          shape: const CircularNotchedRectangle(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                          builder: (context) => MahasiswaScreen()),
-                      (route) => false,
-                    );
-                  },
-                  child: Text(
-                    '<- Back to Home',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          child: Icon(Icons.add),
         ),
       ),
     );

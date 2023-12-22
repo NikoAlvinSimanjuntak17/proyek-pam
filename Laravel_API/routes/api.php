@@ -58,14 +58,6 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::delete('/booking-ruangan/{id}', [BookingRuanganController::class, 'destroy']);
     Route::get('/ruangan', [RuanganController::class, 'index']);
 
-    Route::get('/bookingbaju',[BookingBajuController::class, 'index']);
-    Route::post('/bookingbaju',[BookingBajuController::class, 'store']);
-    Route::put('/bookingbaju/{id}',[BookingBajuController::class, 'update']);
-    Route::get('/bookingbaju/{id}',[BookingBajuController::class, 'show']);
-    Route::delete('/bookingbaju/{id}',[BookingBajuController::class, 'destroy']);
-
-    Route::get('/ukuran-baju', [BookingBajuController::class, 'getBaju']);
-
     Route::get('/izin-keluar/all', [RequestIzinKeluarController::class, 'viewAllRequestsForBaak']);
     Route::put('/izin-keluar/{id}/approve', [RequestIzinKeluarController::class, 'approveIzinKeluar']);
     Route::put('/izin-keluar/{id}/reject', [RequestIzinKeluarController::class, 'rejectIzinKeluar']);
@@ -85,8 +77,5 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::put('/booking-ruangan/{id}/approve', [BookingRuanganController::class, 'approveBookingRuangan']);
     Route::put('/booking-ruangan/{id}/reject', [BookingRuanganController::class, 'rejectBookingRuangan']);
 
-    Route::get('/booking-baju/all', [BookingBajuController::class, 'viewAllRequestsForBaak']);
-    Route::put('/booking-baju/{id}/approve', [BookingBajuController::class, 'approveBookingBaju']);
-    Route::put('/booking-baju/{id}/reject', [BookingBajuController::class, 'rejectBookingBaju']);
 
 });

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:it_del/Mahasiswa.views/RequestIzinKeluar.dart';
-import 'package:it_del/Models/api_response.dart';
-import 'package:it_del/Models/request_izin_keluar.dart';
-import 'package:it_del/Auth/login_screen.dart';
-import 'package:it_del/Services/IzinKeluar_service.dart';
-import 'package:it_del/Services/User_service.dart';
-import 'package:it_del/Services/globals.dart';
+import 'package:PAM/Mahasiswa.views/RequestIzinKeluar.dart';
+import 'package:PAM/Models/api_response.dart';
+import 'package:PAM/Models/request_izin_keluar.dart';
+import 'package:PAM/Auth/login_screen.dart';
+import 'package:PAM/Services/IzinKeluar_service.dart';
+import 'package:PAM/Services/User_service.dart';
+import 'package:PAM/Services/globals.dart';
 
 class FormIzinKeluars extends StatefulWidget {
   final RequestIzinKeluar? formIzinKeluar;

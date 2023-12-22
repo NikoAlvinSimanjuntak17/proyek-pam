@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:it_del/Baak.views/BaakScreen.dart';
-import 'package:it_del/Mahasiswa.views/MahasiswaScreen.dart';
-import 'package:it_del/Models/api_response.dart';
-import 'package:it_del/Models/user.dart';
-import 'package:it_del/Services/User_service.dart';
-import 'package:it_del/Auth/register_screen.dart';
-import 'package:it_del/rounded_button.dart';
+import 'package:PAM/Baak.views/BaakScreen.dart';
+import 'package:PAM/Mahasiswa.views/MahasiswaScreen.dart';
+import 'package:PAM/Models/api_response.dart';
+import 'package:PAM/Models/user.dart';
+import 'package:PAM/Services/User_service.dart';
+import 'package:PAM/Auth/register_screen.dart';
+import 'package:PAM/rounded_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,7 +22,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void _loginUser() async {
     ApiResponse response = await login(txtemail.text, txtpassword.text);
     if (response.error == null) {
-      // Extract the role from the response
       _saveAndRedirectHome(response.data as User);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -36,7 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
     await pref.setString('token', user.token ?? '');
     await pref.setInt('userId', user.id ?? 0);
 
-    // Check the user's role and redirect accordingly
     if (user.role == 'mahasiswa') {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => MahasiswaScreen()),
@@ -53,19 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
-        centerTitle: true,
-        elevation: 0,
-        title: Text(
-          'Baak Application',
-          style: TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -76,7 +61,6 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
-                color: Colors.blueGrey,
               ),
             ),
             SizedBox(height: 20),
@@ -114,8 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 (route) => false,
               ),
               child: Text(
-                'Don\'t have an account? Register',
-                style: TextStyle(color: Colors.blue),
+                'Silahkan Register Jika Belum Punya Akun',
               ),
             ),
           ],

@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:it_del/Services/User_service.dart';
+import 'package:PAM/Services/User_service.dart';
 import 'package:http/http.dart' as http;
-import 'package:it_del/Models/api_response.dart';
-import 'package:it_del/Models/izinkeluarBaak.dart'; // Sesuaikan dengan lokasi file model IzinKeluar.dart Anda
-import 'package:it_del/Services/globals.dart';
+import 'package:PAM/Models/api_response.dart';
+import 'package:PAM/Models/izinkeluarBaak.dart'; // Sesuaikan dengan lokasi file model IzinKeluar.dart Anda
+import 'package:PAM/Services/globals.dart';
 
 class IzinKeluarBaakController {
   static Future<ApiResponse<String>> approveIzinKeluar(int izinId) async {

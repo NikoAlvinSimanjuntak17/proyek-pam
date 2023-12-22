@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:it_del/Models/api_response.dart';
-import 'package:it_del/Models/user.dart';
-import 'package:it_del/Services/globals.dart';
+import 'package:PAM/Models/api_response.dart';
+import 'package:PAM/Models/user.dart';
+import 'package:PAM/Services/globals.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<ApiResponse> login(String email, String password) async {

@@ -1,36 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:it_del/Models/api_response.dart';
-import 'package:it_del/Models/izinkeluarBaak.dart';
-import 'package:it_del/Services/izinkeluarBaak_service.dart';
+import 'package:PAM/Models/api_response.dart';
+import 'package:PAM/Models/bookingruanganBaak.dart';
+import 'package:PAM/Services/bookingruanganBaak_service.dart';
 
-class IzinKeluarBaakView extends StatefulWidget {
+class BookingRuanganBaakView extends StatefulWidget {
   @override
-  _IzinKeluarBaakViewState createState() => _IzinKeluarBaakViewState();
+  _BookingRuanganBaakViewState createState() => _BookingRuanganBaakViewState();
 }
 
-class _IzinKeluarBaakViewState extends State<IzinKeluarBaakView> {
-  late Future<ApiResponse<List<IzinKeluarBaak>>> _izinKeluarData;
+class _BookingRuanganBaakViewState extends State<BookingRuanganBaakView> {
+  late Future<ApiResponse<List<BookingRuanganBaak>>> _bookingRuanganData;
 
   @override
   void initState() {
     super.initState();
-    _izinKeluarData = IzinKeluarBaakController.viewAllRequestsForBaak();
+    _bookingRuanganData = BookingRuanganBaakController.viewAllRequestsForBaak();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('List Request Izin Keluar'),
-        backgroundColor: Colors.blue,
+        title: Text('List Booking Ruangan'),
+        backgroundColor:
+            Colors.blue, // Set the same color as IzinKeluarBaakView
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
               setState(() {
                 // Refresh data
-                _izinKeluarData =
-                    IzinKeluarBaakController.viewAllRequestsForBaak();
+                _bookingRuanganData =
+                    BookingRuanganBaakController.viewAllRequestsForBaak();
               });
             },
           ),
@@ -44,50 +45,54 @@ class _IzinKeluarBaakViewState extends State<IzinKeluarBaakView> {
             colors: [Colors.blue, Colors.indigo],
           ),
         ),
-        child: FutureBuilder<ApiResponse<List<IzinKeluarBaak>>>(
-          future: _izinKeluarData,
+        child: FutureBuilder<ApiResponse<List<BookingRuanganBaak>>>(
+          future: _bookingRuanganData,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.error != null) {
-              return Center(child: Text('Failed to load data.'));
+              final error = snapshot.data?.error ?? 'Failed to load data.';
+              return Center(child: Text(error));
             } else {
-              List<IzinKeluarBaak> izinKeluarList = snapshot.data!.data!;
+              List<BookingRuanganBaak> bookingRuanganList =
+                  snapshot.data!.data!;
               return ListView.builder(
-                itemCount: izinKeluarList.length,
+                itemCount: bookingRuanganList.length,
                 itemBuilder: (context, index) {
-                  IzinKeluarBaak izinKeluar = izinKeluarList[index];
+                  BookingRuanganBaak bookingRuangan = bookingRuanganList[index];
                   return Card(
                     margin: EdgeInsets.all(8.0),
                     child: ListTile(
-                      title: Text('Reason: ${izinKeluar.reason}'),
+                      title: Text('ID: ${bookingRuangan.userId}'),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Status: ${izinKeluar.status}'),
-                          Text('Start Date: ${izinKeluar.startDate}'),
-                          Text('End Date: ${izinKeluar.endDate}'),
+                          Text('Reason: ${bookingRuangan.reason}'),
+                          Text('Status: ${bookingRuangan.status}'),
+                          Text('Room: ${bookingRuangan.roomId}'),
+                          Text('Start Date: ${bookingRuangan.startTime}'),
+                          Text('End Date: ${bookingRuangan.endTime}'),
                         ],
                       ),
-                      trailing: izinKeluar.status == 'approved'
+                      trailing: bookingRuangan.status == 'approved'
                           ? Icon(Icons.check, color: Colors.green)
-                          : izinKeluar.status == 'rejected'
+                          : bookingRuangan.status == 'rejected'
                               ? Icon(Icons.clear, color: Colors.red)
                               : Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     ElevatedButton(
                                       onPressed: () {
-                                        approveIzin(izinKeluar.id);
+                                        approveIzin(bookingRuangan.id);
                                       },
                                       child: Text('Approve'),
                                     ),
                                     SizedBox(width: 8.0),
                                     ElevatedButton(
                                       onPressed: () {
-                                        rejectIzin(izinKeluar.id);
+                                        rejectIzin(bookingRuangan.id);
                                       },
                                       child: Text('Reject'),
                                     ),
@@ -106,7 +111,7 @@ class _IzinKeluarBaakViewState extends State<IzinKeluarBaakView> {
 
   void approveIzin(int izinId) async {
     ApiResponse<String> response =
-        await IzinKeluarBaakController.approveIzinKeluar(izinId);
+        await BookingRuanganBaakController.approveBookingRuangan(izinId);
     if (response.error != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to approve: ${response.error}')),
@@ -116,14 +121,16 @@ class _IzinKeluarBaakViewState extends State<IzinKeluarBaakView> {
         SnackBar(content: Text('${response.data}')),
       );
       setState(() {
-        _izinKeluarData = IzinKeluarBaakController.viewAllRequestsForBaak();
+        // Refresh data after approval
+        _bookingRuanganData =
+            BookingRuanganBaakController.viewAllRequestsForBaak();
       });
     }
   }
 
   void rejectIzin(int izinId) async {
     ApiResponse<String> response =
-        await IzinKeluarBaakController.rejectIzinKeluar(izinId);
+        await BookingRuanganBaakController.rejectBookingRuangan(izinId);
     if (response.error != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to reject: ${response.error}')),
@@ -133,7 +140,8 @@ class _IzinKeluarBaakViewState extends State<IzinKeluarBaakView> {
         SnackBar(content: Text('${response.data}')),
       );
       setState(() {
-        _izinKeluarData = IzinKeluarBaakController.viewAllRequestsForBaak();
+        _bookingRuanganData =
+            BookingRuanganBaakController.viewAllRequestsForBaak();
       });
     }
   }
